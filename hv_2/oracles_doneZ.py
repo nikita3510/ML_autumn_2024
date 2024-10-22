@@ -74,3 +74,36 @@ def hess_finite_diff(func, x, eps=1e-5):
                           func(x)) / (eps ** 2)
             hess[j, i] = hess[i, j]
     return hess
+
+np.random.seed(0)
+n_samples = 10
+n_features = 5
+
+A = np.random.randn(n_samples, n_features)
+b = np.random.randint(0, 2, size=n_samples)  # Бинарная целевая переменная
+regcoef = 0.1
+
+# Создание оракула и тестирование разностных производных
+oracle = create_log_reg_oracle(A, b, regcoef)
+
+# Тестовая точка
+x_test = np.random.randn(n_features)
+
+# Вычисление градиента и Гессиана аналитически
+grad_analytic = oracle.grad(x_test)
+hess_analytic = oracle.hess(x_test)
+
+# Вычисление градиента и Гессиана с помощью разностных производных
+grad_numerical = grad_finite_diff(lambda x: oracle.f(x), x_test)
+hess_numerical = hess_finite_diff(lambda x: oracle.f(x), x_test)
+
+# Сравнение результатов
+print("Аналитический градиент:\n", grad_analytic)
+print("Численный градиент:\n", grad_numerical)
+print("\nРазница (градиент):\n", grad_analytic - grad_numerical)
+
+print("\nАналитический Гессиан:\n", hess_analytic)
+print("Численный Гессиан:\n", hess_numerical)
+print("\nРазница (Гессиан):\n", hess_analytic - hess_numerical)
+
+# Нужно этот код вставить в код функций и все будет работать
