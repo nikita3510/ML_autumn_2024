@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Fake News Risk Test</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background: linear-gradient(135deg,#667eea,#764ba2);
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#333;
+}
+
+.container{
+background:white;
+padding:40px;
+width:420px;
+border-radius:16px;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+animation:fade 0.6s ease;
+}
+
+@keyframes fade{
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+h1{
+text-align:center;
+margin-bottom:10px;
+}
+
+.subtitle{
+text-align:center;
+font-size:14px;
+color:#666;
+margin-bottom:25px;
+}
+
+input, select{
+width:100%;
+padding:10px;
+margin-top:6px;
+margin-bottom:16px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:15px;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#667eea;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+transform:scale(1.03);
+}
+
+.result{
+margin-top:20px;
+padding:15px;
+border-radius:10px;
+background:#f3f5ff;
+text-align:center;
+font-size:18px;
+}
+
+.bar{
+height:12px;
+border-radius:10px;
+background:#ddd;
+margin-top:10px;
+overflow:hidden;
+}
+
+.fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#00c6ff,#0072ff);
+transition:1s;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Fake News Test</h1>
+<div class="subtitle">Оценка вероятности поверить фейковой новости</div>
+
+<label>Возраст</label>
+<input id="age" type="number">
+
+<label>Делитесь новостями?</label>
+<select id="share">
+<option value="1">Да</option>
+<option value="0">Нет</option>
+</select>
+
+<label>Проверяете источники?</label>
+<select id="check">
+<option value="1">Да</option>
+<option value="0">Нет</option>
+</select>
+
+<label>Получаете новости из соцсетей?</label>
+<select id="social">
+<option value="1">Да</option>
+<option value="0">Нет</option>
+</select>
+
+<label>Сталкивались с фейками?</label>
+<select id="seen">
+<option value="1">Да</option>
+<option value="0">Нет</option>
+</select>
+
+<button onclick="calc()">Рассчитать риск</button>
+
+<div class="result" id="result">
+Результат появится здесь
+<div class="bar"><div id="fill" class="fill"></div></div>
+</div>
+
+</div>
+
+<script>
+
+function sigmoid(z){
+return 1/(1+Math.exp(-z))
+}
+
+function calc(){
+
+let age = Number(document.getElementById("age").value)
+let share = Number(document.getElementById("share").value)
+let check = Number(document.getElementById("check").value)
+let social = Number(document.getElementById("social").value)
+let seen = Number(document.getElementById("seen").value)
+
+let z = -1.2
+
+if(share) z += 1.1
+if(!check) z += 0.9
+if(social) z += 0.6
+if(seen) z += 0.3
+
+z += (age - 40) * 0.01
+
+let p = sigmoid(z)
+let percent = (p*100).toFixed(1)
+
+document.getElementById("result").innerHTML =
+"Вероятность поверить фейку: <b>" + percent + "%</b>" +
+"<div class='bar'><div id='fill' class='fill'></div></div>"
+
+document.getElementById("fill").style.width = percent + "%"
+
+}
+
+</script>
+
+</body>
+</html>
